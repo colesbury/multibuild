@@ -252,6 +252,8 @@ function macpython_impl_for_version {
     check_var $1
     if [[ "$version" =~ ^pypy ]]; then
         echo pp
+    elif [[ "$version" =~ ^nogil ]]; then
+        echo nogil
     elif [[ "$version" =~ ([0-9\.]+) ]]; then
         echo cp
     else
@@ -287,6 +289,8 @@ function install_macpython {
     local impl=$(macpython_impl_for_version $version)
     if [[ "$impl" == "pp" ]]; then
         install_pypy $version
+    elif [[ "$impl" == "nogil" ]]; then
+        install_nogil $version
     elif [[ "$impl" == "cp" ]]; then
         local stripped_ver=$(strip_macpython_ver_prefix $version)
         install_mac_cpython $stripped_ver $py_osx_ver

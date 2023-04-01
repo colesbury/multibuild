@@ -14,6 +14,7 @@ set -e
 MULTIBUILD_DIR=$(dirname "${BASH_SOURCE[0]}")
 DOWNLOADS_SDIR=downloads
 PYPY_URL=https://downloads.python.org/pypy
+NOGIL_URL=https://github.com/colesbury/nogil/releases/download
 # For back-compatibility.  We use the "ensurepip" module now
 # instead of get-pip.py
 GET_PIP_URL=https://bootstrap.pypa.io/get-pip.py
@@ -568,6 +569,23 @@ function install_pypy {
     if [ "$major" == "3" ] && [ ! -x "$py_build/bin/pip" ]; then
         ln $py_build/bin/pip3 $py_build/bin/pip
     fi
+    PIP_CMD=pip
+}
+
+LATEST_NOGIL=v3.9.10-nogil-2022-12-21
+
+function install_nogil {
+    local version=$1
+
+    local py_build=python-3.9.10-nogil-macos
+    local py_tar=${py_build}.tar.gz
+    local tar_path=$DOWNLOADS_SDIR/$py_tar
+
+    mkdir -p $DOWNLOADS_SDIR
+    wget -nv $NOGIL_URL/$LATEST_NOGIL/$py_tar -P $DOWNLOADS_SDIR
+    tar xf $tar_path
+    PYTHON_EXE=$(realpath $py_build/bin/python)
+    $PYTHON_EXE -mpip install --upgrade pip setuptools wheel
     PIP_CMD=pip
 }
 
